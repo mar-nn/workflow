@@ -1,0 +1,73 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: &template-ref {{ .Release.Name }}-template
+spec:
+  templates:
+    - name: transform
+      container:
+        image: &image '{{ .Values.image.uri }}:{{ .Values.image.tag }}'
+        command:
+          - python -m {{ .Release.Name }}.transform
+        args:
+          - --target {{ `{{ inputs.parameters.target }}` }}
+          - --data {{ `{{ inputs.parameters.data }}` }}
+          - --schema /etc/config/schema.yaml
+          - --config /etc/config/config.yaml
+        volumeMounts:
+          - &config-vol-mnt
+            name: config-vol
+            mountPath: /etc/config
+      volumes:
+        - &config-vol
+          name: config-vol
+          configMap:
+            name: {{ .Release.Name }}-config
+    - name: train
+      container:
+        image: *image
+        command:
+          - python -m {{ .Release.Name }}.train
+        args:
+          - --config /etc/config/config.yaml
+        volumeMounts:
+        - *config-vol-mnt
+      volumes:
+        - *config-vol
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: {{ .Release.Name }}-
+spec:
+  entrypoint: main
+  templates:
+    - name: main
+      steps:
+        - - name: transform:users
+            templateRef: &transform-template
+              name: *template-ref
+              template: transform
+            arguments:
+              parameters:
+              - name: target
+                value: users
+          - name: transform:items
+            templateRef:
+              <<: *transform-template
+            arguments:
+              parameters:
+              - name: target
+                value: items
+        - - name: transform:interactions
+            templateRef:
+              <<: *transform-template
+            arguments:
+              parameters:
+              - name: target
+                value: interactions
+        - - name: train
+            templateRef:
+              name: *template-ref
+              template: train
