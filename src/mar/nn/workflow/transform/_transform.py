@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
+import yaml
 from sklearn.compose import ColumnTransformer
 
-from .._config import Config
 from .features import CategoryEncoder, IDEncoder, NumberEncoder
 
 
@@ -16,12 +16,15 @@ _ENCODER_MAPPING = {
 class Transform(ColumnTransformer):
     _feature_index: dict[str, list[int]]
 
-    def __init__(self, config: str | dict, target: str):
+    def __init__(self, config: str, target: str):
+        super().__init__(transformers=[], remainder="drop")
         self.target = target
-        self.config = Config(config) if isinstance(config, str) else config
+
+        with open(config, "r") as file:
+            self.config = yaml.safe_load(file)
+
         self.dataset = self.get_dataset()
         self.schema = self.dataset.pop("schema")
-        super().__init__(transformers=[], remainder="drop")
 
     def __call__(self, X: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
         return self.fit(X).transform(X)
