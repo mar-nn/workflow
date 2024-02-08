@@ -1,0 +1,7 @@
+version: '3.5'
+
+services:
+  transform:
+    build:
+      context: .
+    command: ["python", "-m", "mar.workflow.transform"]
