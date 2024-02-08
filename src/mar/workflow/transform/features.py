@@ -1,5 +1,5 @@
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, OrdinalEncoder
 
 
 class _BaseEncoder:
