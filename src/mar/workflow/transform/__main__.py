@@ -19,8 +19,7 @@ qdrant = QdrantClient(url=QDRANT_URL, port=QDRANT_PORT)
 @click.option("--target")
 def transform(data: str, schema: str, format: str = None):
     data: pd.DataFrame = getattr(pd, f"read_{format}")(data)
-    vectors = Transform(schema).fit_transform(data)
-
+    ids, vectors = Transform(schema)(data)
 
 
 if __name__ == "__main__":
