@@ -1,7 +1,15 @@
+import os
 import click
 import pandas as pd
 
+from qdrant_client import QdrantClient
+
 from mar.workflow.transform import Transform
+
+QDRANT_URL = os.environ["QDRANT_URL"]
+QDRANT_PORT = os.environ["QDRANT_PORT"]
+
+qdrant = QdrantClient(url=QDRANT_URL, port=QDRANT_PORT)
 
 
 @click.command
