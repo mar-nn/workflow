@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import yaml
+
 from sklearn.compose import ColumnTransformer
 
 from .features import CategoryEncoder, IDEncoder, NumberEncoder
@@ -16,40 +16,21 @@ _ENCODER_MAPPING = {
 class Transform(ColumnTransformer):
     _feature_index: dict[str, list[int]]
 
-    def __init__(self, config: str, target: str):
+    def __init__(self, schema: dict[str, str]):
         super().__init__(transformers=[], remainder="drop")
-        self.target = target
-
-        with open(config, "r") as file:
-            self.config = yaml.safe_load(file)
-
-        self.dataset = self.get_dataset()
-        self.schema = self.dataset.pop("schema")
+        self.schema = schema
 
     def __call__(self, X: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
         return self.fit(X).transform(X)
 
     def fit(self, X: pd.DataFrame):
         feature_index = self._get_feature_indices(self.schema, X.columns.values)
-
-        if self._has_references():
-            _ = feature_index.pop("id")
-            feature_index["id"] = []
-            self.remainder = "passthrough"
-
         self.transformers = self._get_transformers(feature_index)
         return super().fit(X.values)
 
     def transform(self, X) -> tuple[np.ndarray, np.ndarray]:
         transformed: np.ndarray = super().transform(X.values)
-
-        if self._has_references():
-            # assumes it's the last transformation made
-            encoded_id = transformed[:, [-1]]
-            transformed = np.delete(transformed, -1, axis=1)
-            return encoded_id, transformed
-
-        return transformed[:, -2:], transformed[:, :-2]
+        return transformed[:, -1:], transformed[:, :-1]
 
     @staticmethod
     def _get_transformers(index_dict: dict[str, list]) -> list[tuple]:
@@ -67,12 +48,3 @@ class Transform(ColumnTransformer):
         for feature, feature_type in schema.items():
             idx[feature_type] += np.where(header == feature)[0].tolist()
         return idx
-
-    def _has_references(self):
-        return "references" in self.dataset.keys()
-
-    def get_dataset(self) -> dict:
-        def check_name(x):
-            return x["name"] == self.target
-
-        return next(filter(check_name, self.config["transform"]["datasets"])).copy()
