@@ -32,7 +32,7 @@ def get_points(ids: np.ndarray, vectors: np.ndarray):
 @click.option("--data")
 @click.option("--schema")
 @click.option("--format")
-def transform(data: str, schema: str, format: str = None):
+def transform(data: str, schema: str, format: str = "csv"):
     data: pd.DataFrame = getattr(pd, f"read_{format}")(data)
     ids, vectors = Transform(schema)(data)
     name = create_collection(size=vectors.shape[1])
