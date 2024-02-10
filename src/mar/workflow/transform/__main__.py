@@ -1,10 +1,11 @@
 import os
 import click
+import numpy as np
 import pandas as pd
 from uuid import uuid4
 
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import VectorParams
+from qdrant_client.http.models import VectorParams, PointStruct
 
 from mar.workflow.transform import Transform
 
@@ -18,6 +19,13 @@ def create_collection(size: int):
     name = str(uuid4())
     config = VectorParams(size=size)
     qdrant.create_collection(name, config)
+    return name
+
+
+def get_points(ids: np.ndarray, vectors: np.ndarray):
+    ids = ids.reshape(-1)
+    vectors = vectors.tolist()
+    return [PointStruct(id=int(id), vector=vector) for id, vector in zip(ids, vectors)]
 
 
 @click.command
@@ -27,8 +35,8 @@ def create_collection(size: int):
 def transform(data: str, schema: str, format: str = None):
     data: pd.DataFrame = getattr(pd, f"read_{format}")(data)
     ids, vectors = Transform(schema)(data)
-
-    create_collection(size=vectors.shape[1])
+    name = create_collection(size=vectors.shape[1])
+    points = get_points(ids, vectors)
 
 
 if __name__ == "__main__":
