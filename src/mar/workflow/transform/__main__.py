@@ -37,6 +37,7 @@ def transform(data: str, schema: str, format: str = None):
     ids, vectors = Transform(schema)(data)
     name = create_collection(size=vectors.shape[1])
     points = get_points(ids, vectors)
+    qdrant.upsert(name, points)
 
 
 if __name__ == "__main__":
