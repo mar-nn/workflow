@@ -3,7 +3,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
   generateName: {{ .Release.Name }}-
-  namespace: {{ .Release.Namespace }}
 spec:
   entrypoint: diamond
   templates:

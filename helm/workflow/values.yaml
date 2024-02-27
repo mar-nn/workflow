@@ -1,2 +1,7 @@
+workflow:
+  image:
+    repository: null
+    tag: null
+
 qdrant:
   fullnameOverride: qdrant
