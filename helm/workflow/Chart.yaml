@@ -6,4 +6,4 @@ appVersion: "0.0.0"
 dependencies:
 - name: qdrant
   repository: https://qdrant.github.io/qdrant-helm
-  version: 0.7.2
+  version: 0.7.6
