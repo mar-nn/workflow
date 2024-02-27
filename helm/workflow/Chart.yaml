@@ -3,6 +3,7 @@ name: mar-workflow
 description: "recommender systems orchestrator"
 version: "0.0.0"
 appVersion: "0.0.0"
-maintainers:
-  - name: José Medeiros
-    email: joseprsm@gmail.com
+dependencies:
+- name: qdrant
+  repository: https://qdrant.github.io/qdrant-helm
+  version: 0.7.6
