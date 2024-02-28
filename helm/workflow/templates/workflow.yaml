@@ -2,19 +2,46 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: workflow-template-submittable
+  name: workflow-template
   namespace: argo
 spec:
-  arguments:
-    parameters:
-      - name: message
-        value: hello world
   templates:
-    - name: whalesay-template
+    - name: step
       inputs:
         parameters:
-          - name: message
+          - name: step
+          - name: arguments
       container:
-        image: docker/whalesay
-        command: [cowsay]
-        args: ['{{`{{inputs.parameters.message}}`}}']
+        image: '{{ .Values.workflow.image.repository }}/{{`{{ inputs.parameters.step }}`}}:{{ .Values.workflow.image.tag }}'
+        command: [ 'python -m mar.workflow.{{`{{ inputs.parameters.step }}`}}' ]
+        args: [ '{{`{{ inputs.parameters.arguments }}`}}' ]
+    - name: workflow
+      inputs:
+        parameters:
+          - name: users
+          - name: items
+          - name: interactions
+          - name: schema
+      dag:
+        tasks:
+          - name: transform:users
+            template: step
+            arguments: &transform-args
+              parameters:
+                - name: step
+                  value: transform
+                - name: arguments
+                  value: >- 
+                    --data {{`{{ inputs.parameters.interactions }}`}}
+                    --schema {{`{{ inputs.parameters.schema }}`}}
+          - name: transform:items
+            template: step
+            arguments:
+              <<: *transform-args
+          - name: transform:interactions
+            template: step
+            arguments:
+              <<: *transform-args
+            dependencies: 
+              - transform:users
+              - transform:items
