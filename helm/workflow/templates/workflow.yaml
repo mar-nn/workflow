@@ -26,7 +26,29 @@ spec:
         tasks:
           - name: transform:users
             template: step
-            arguments: &transform-args
+            arguments:
+              parameters:
+                - name: step
+                  value: transform
+                - name: arguments
+                  value: >- 
+                    --data {{`{{ inputs.parameters.users }}`}}
+                    --schema {{`{{ inputs.parameters.schema }}`}}
+                    --target users
+          - name: transform:items
+            template: step
+            arguments:
+              parameters:
+                - name: step
+                  value: transform
+                - name: arguments
+                  value: >- 
+                    --data {{`{{ inputs.parameters.items }}`}}
+                    --schema {{`{{ inputs.parameters.schema }}`}}
+                    --target items
+          - name: transform:interactions
+            template: step
+            arguments:
               parameters:
                 - name: step
                   value: transform
@@ -34,14 +56,7 @@ spec:
                   value: >- 
                     --data {{`{{ inputs.parameters.interactions }}`}}
                     --schema {{`{{ inputs.parameters.schema }}`}}
-          - name: transform:items
-            template: step
-            arguments:
-              <<: *transform-args
-          - name: transform:interactions
-            template: step
-            arguments:
-              <<: *transform-args
+                    --target interactions
             dependencies: 
               - transform:users
               - transform:items
