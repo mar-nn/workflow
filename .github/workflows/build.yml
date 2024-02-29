@@ -15,9 +15,6 @@ jobs:
       packages: write
     env:
       IMAGE_URI: ghcr.io/${{ github.repository }}
-    strategy:
-      matrix:
-        target: [transform]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -37,5 +34,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_URI }}/${{ matrix.target }}:latest
-          target: ${{ matrix.target }}
+          tags: ${{ env.IMAGE_URI }}:latest
