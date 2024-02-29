@@ -26,33 +26,6 @@ spec:
                   value: transform
                 - name: arguments
                   value: >- 
-                    --data {{`{{ inputs.parameters.users }}`}}
-                    --schema {{`{{ inputs.parameters.schema }}`}}
+                    --data foo
+                    --schema bar
                     --target users
-          - name: transform:items
-            templateRef:
-              <<: *template
-            arguments:
-              parameters:
-                - name: step
-                  value: transform
-                - name: arguments
-                  value: >- 
-                    --data {{`{{ inputs.parameters.items }}`}}
-                    --schema {{`{{ inputs.parameters.schema }}`}}
-                    --target items
-          - name: transform:interactions
-            templateRef:
-              <<: *template
-            arguments:
-              parameters:
-                - name: step
-                  value: transform
-                - name: arguments
-                  value: >- 
-                    --data {{`{{ inputs.parameters.interactions }}`}}
-                    --schema {{`{{ inputs.parameters.schema }}`}}
-                    --target interactions
-            dependencies: 
-              - transform:users
-              - transform:items
