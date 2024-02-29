@@ -8,12 +8,6 @@ spec:
   entrypoint: main
   templates:
     - name: main
-      inputs:
-        parameters:
-          - name: users
-          - name: items
-          - name: interactions
-          - name: schema
       dag:
         tasks:
           - name: transform:users
