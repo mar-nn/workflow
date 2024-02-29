@@ -1,0 +1,17 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: workflow-tmpl
+  namespace: argo
+spec:
+  templates:
+    - name: step
+      inputs:
+        parameters:
+          - name: step
+          - name: arguments
+      container:
+        image: '{{ .Values.workflow.image.repository }}/{{`{{ inputs.parameters.step }}`}}:{{ .Values.workflow.image.tag }}'
+        command: [ 'python -m mar.workflow.{{`{{ inputs.parameters.step }}`}}' ]
+        args: [ '{{`{{ inputs.parameters.arguments }}`}}' ]

@@ -1,21 +1,13 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: WorkflowTemplate
+kind: Workflow
 metadata:
-  name: workflow-template
+  name: workflow
   namespace: argo
 spec:
+  entrypoint: main
   templates:
-    - name: step
-      inputs:
-        parameters:
-          - name: step
-          - name: arguments
-      container:
-        image: '{{ .Values.workflow.image.repository }}/{{`{{ inputs.parameters.step }}`}}:{{ .Values.workflow.image.tag }}'
-        command: [ 'python -m mar.workflow.{{`{{ inputs.parameters.step }}`}}' ]
-        args: [ '{{`{{ inputs.parameters.arguments }}`}}' ]
-    - name: workflow
+    - name: main
       inputs:
         parameters:
           - name: users
@@ -25,7 +17,9 @@ spec:
       dag:
         tasks:
           - name: transform:users
-            template: step
+            templateRef: &template
+              name: workflow-tmpl
+              template: step
             arguments:
               parameters:
                 - name: step
@@ -36,7 +30,8 @@ spec:
                     --schema {{`{{ inputs.parameters.schema }}`}}
                     --target users
           - name: transform:items
-            template: step
+            templateRef:
+              <<: *template
             arguments:
               parameters:
                 - name: step
@@ -47,7 +42,8 @@ spec:
                     --schema {{`{{ inputs.parameters.schema }}`}}
                     --target items
           - name: transform:interactions
-            template: step
+            templateRef:
+              <<: *template
             arguments:
               parameters:
                 - name: step
