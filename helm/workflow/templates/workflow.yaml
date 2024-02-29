@@ -10,7 +10,7 @@ spec:
     - name: main
       dag:
         tasks:
-          - name: transform:users
+          - name: transform-users
             templateRef: &template
               name: workflow-tmpl
               template: step
