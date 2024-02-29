@@ -1,7 +1,7 @@
 workflow:
   image:
-    repository: null
-    tag: null
+    repository: ghcr.io/mar-nn/workflow
+    tag: latest
 
 qdrant:
   fullnameOverride: qdrant
