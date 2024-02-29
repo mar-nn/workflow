@@ -22,8 +22,6 @@ spec:
           - '{{`{{ inputs.parameters.data }}`}}'
           - --schema
           - '{{`{{ inputs.parameters.schema }}`}}'
-          - --target
-          - '{{`{{ inputs.parameters.target }}`}}'
         imagePullPolicy: IfNotPresent
         env:
           - name: QDRANT_URL
