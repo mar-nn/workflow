@@ -1,8 +1,8 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: WorkflowTemplate
 metadata:
-  name: workflow
+  name: {{ .Release.Name }}
   namespace: argo
 spec:
   entrypoint: main
@@ -22,3 +22,34 @@ spec:
                   value: bar
                 - name: target
                   value: baz
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: {{ .Release.Name }}-steps
+  namespace: argo
+spec:
+  templates:
+    - name: transform-step
+      inputs:
+        parameters:
+          - name: data
+          - name: schema
+          - name: target
+      container:
+        image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
+        command: [ python ]
+        args:
+          - -m
+          - mar.workflow.transform
+          - --data
+          - '{{`{{ inputs.parameters.data }}`}}'
+          - --schema
+          - '{{`{{ inputs.parameters.schema }}`}}'
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: QDRANT_URL
+            value: >
+              {{ .Values.qdrant.fullnameOverride }}.{{ .Release.Namespace }}.svc.cluster.local
+          - name: QDRANT_PORT
+            value: '6333'
