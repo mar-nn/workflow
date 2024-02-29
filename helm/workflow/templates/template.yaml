@@ -13,6 +13,6 @@ spec:
           - name: arguments
       container:
         image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
-        command: [ 'python -m mar.workflow.{{`{{ inputs.parameters.step }}`}}' ]
-        args: [ '{{`{{ inputs.parameters.arguments }}`}}' ]
+        command: [ python ]
+        args: [ -m, 'mar.workflow.{{`{{ inputs.parameters.step }}`}}', '{{`{{ inputs.parameters.arguments }}`}}' ]
         imagePullPolicy: IfNotPresent
