@@ -1,41 +1,41 @@
 on:
-    push:
-      branches:
-        - master
-      paths: 
-        - src/**
-        - Dockerfile
-    workflow_dispatch:
+  push:
+    branches:
+    - master
+    paths: 
+    - src/**
+    - Dockerfile
+  workflow_dispatch:
   
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-        packages: write
-      env:
-        IMAGE_URI: ghcr.io/${{ github.repository }}
-      strategy:
-        matrix:
-          target: [transform]
-      steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v3
-        - name: Log into registry
-          uses: docker/login-action@v2
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        - name: Extract Docker metadata
-          id: meta
-          uses: docker/metadata-action@v2
-          with:
-            images: ${{ env.IMAGE_URI }}
-        - name: Build and push Docker Image
-          uses: docker/build-push-action@v2
-          with:
-            context: .
-            push: true
-            tags: ${{ env.IMAGE_URI }}/${{ matrix.target }}:latest
-            target: ${{ matrix.target }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE_URI: ghcr.io/${{ github.repository }}
+    strategy:
+      matrix:
+        target: [transform]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Log into registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v2
+        with:
+          images: ${{ env.IMAGE_URI }}
+      - name: Build and push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_URI }}/${{ matrix.target }}:latest
+          target: ${{ matrix.target }}
