@@ -16,3 +16,9 @@ spec:
         command: [ python ]
         args: [ -m, 'mar.workflow.{{`{{ inputs.parameters.step }}`}}', '{{`{{ inputs.parameters.arguments }}`}}' ]
         imagePullPolicy: IfNotPresent
+        env:
+          - name: QDRANT_URL
+            value: >
+              {{ .Values.qdrant.fullnameOverride }}.{{ .Release.Namespace }}.svc.cluster.local
+          - name: QDRANT_PORT
+            value: '6333'
