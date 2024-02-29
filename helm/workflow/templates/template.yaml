@@ -12,6 +12,6 @@ spec:
           - name: step
           - name: arguments
       container:
-        image: '{{ .Values.workflow.image.repository }}/{{`{{ inputs.parameters.step }}`}}:{{ .Values.workflow.image.tag }}'
+        image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
         command: [ 'python -m mar.workflow.{{`{{ inputs.parameters.step }}`}}' ]
         args: [ '{{`{{ inputs.parameters.arguments }}`}}' ]
