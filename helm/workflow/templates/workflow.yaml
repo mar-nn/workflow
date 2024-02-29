@@ -6,22 +6,28 @@ metadata:
   namespace: argo
 spec:
   entrypoint: main
+  arguments:
+    parameters:
+      - name: users
+      - name: items
+      - name: interactions
+      - name: schema
   templates:
     - name: main
       dag:
         tasks:
           - name: transform-users
             templateRef:
-              name: workflow-tmpl
+              name: {{ .Release.Name }}-steps
               template: transform-step
             arguments:
               parameters:
                 - name: data
-                  value: foo
+                  value: '{{`{{ inputs.parameters.users }}`}}'
                 - name: schema
-                  value: bar
+                  value: '{{`{{ inputs.parameters.schema }}`}}'
                 - name: target
-                  value: baz
+                  value: users
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
