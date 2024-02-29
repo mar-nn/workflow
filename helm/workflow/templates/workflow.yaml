@@ -11,15 +11,14 @@ spec:
       dag:
         tasks:
           - name: transform-users
-            templateRef: &template
+            templateRef:
               name: workflow-tmpl
-              template: step
+              template: transform-step
             arguments:
               parameters:
-                - name: step
-                  value: transform
-                - name: arguments
-                  value: >- 
-                    --data foo
-                    --schema bar
-                    --target users
+                - name: data
+                  value: foo
+                - name: schema
+                  value: bar
+                - name: target
+                  value: baz

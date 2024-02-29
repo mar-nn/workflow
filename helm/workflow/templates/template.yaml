@@ -6,19 +6,28 @@ metadata:
   namespace: argo
 spec:
   templates:
-    - name: step
+    - name: transform-step
       inputs:
         parameters:
-          - name: step
-          - name: arguments
+          - name: data
+          - name: schema
+          - name: target
       container:
         image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
         command: [ python ]
-        args: [ -m, 'mar.workflow.{{`{{ inputs.parameters.step }}`}}' ]
+        args:
+          - -m
+          - mar.workflow.transform
+          - --data
+          - '{{`{{ inputs.parameters.data }}`}}'
+          - --schema
+          - '{{`{{ inputs.parameters.schema }}`}}'
+          - --target
+          - '{{`{{ inputs.parameters.target }}`}}'
         imagePullPolicy: IfNotPresent
         env:
           - name: QDRANT_URL
             value: >
               {{ .Values.qdrant.fullnameOverride }}.{{ .Release.Namespace }}.svc.cluster.local
           - name: QDRANT_PORT
-            value: '6333'
+            value: 6333
