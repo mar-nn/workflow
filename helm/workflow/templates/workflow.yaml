@@ -17,7 +17,7 @@ spec:
       dag:
         tasks:
           - name: transform-users
-            templateRef:
+            templateRef: &template-ref
               name: {{ .Release.Name }}-steps
               template: transform-step
             arguments:
@@ -26,8 +26,24 @@ spec:
                   value: '{{`{{ inputs.parameters.users }}`}}'
                 - name: schema
                   value: '{{`{{ inputs.parameters.schema }}`}}'
-                - name: target
-                  value: users
+          - name: transform-items
+            templateRef:
+              <<: *template-ref
+            arguments:
+              parameters:
+                - name: data
+                  value: '{{`{{ inputs.parameters.items }}`}}'
+                - name: schema
+                  value: '{{`{{ inputs.parameters.schema }}`}}'
+          - name: transform-interactions
+            templateRef:
+              <<: *template-ref
+            arguments:
+              parameters:
+                - name: data
+                  value: '{{`{{ inputs.parameters.interactions }}`}}'
+                - name: schema
+                  value: '{{`{{ inputs.parameters.schema }}`}}'
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
@@ -41,7 +57,6 @@ spec:
         parameters:
           - name: data
           - name: schema
-          - name: target
       container:
         image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
         command: [ python ]
