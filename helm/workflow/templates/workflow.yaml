@@ -27,7 +27,7 @@ spec:
                   - name: data
                     value: '{{ printf "{{ inputs.parameters.%s }}" $entity }}'
                   - name: schema
-                    value: '{{ "{{ inputs.parameters.schema }}" }}'
+                    value: '{{ `{{ inputs.parameters.schema }}` }}'
                   - name: target
                     value: {{ $entity }}
           {{- end }}
