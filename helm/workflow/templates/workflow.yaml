@@ -10,12 +10,30 @@ spec:
     - name: main
       inputs:
         parameters:
-          - users
-          - items
-          - interactions
-          - schema
+          - name: users
+            default: ''
+          - name: items
+            default: ''
+          - name: interactions
+          - name: schema
       dag:
         tasks:
+          {{- range $entity := list "users" "items" }}
+          - name: transform-{{ $entity }}
+            templateRef:
+              name: {{ $.Release.Name }}-steps
+              template: transform-step
+            arguments:
+              parameters:
+                - name: data
+                  value: '{{ printf "{{ inputs.parameters.%s }}" $entity }}'
+                - name: schema
+                  value: '{{ `{{ inputs.parameters.schema }}` }}'
+                - name: entity
+                  value: {{ $entity }}
+            when: >-
+              {{ printf "{{ inputs.parameters.%s }}" $entity }} != ''
+          {{- end }}
           - name: transform-interactions
             templateRef:
               name: {{ .Release.Name }}-steps
