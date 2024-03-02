@@ -6,14 +6,14 @@ metadata:
   namespace: argo
 spec:
   entrypoint: main
-  arguments:
-    parameters:
-      - name: users
-      - name: items
-      - name: interactions
-      - name: schema
   templates:
     - name: main
+      inputs:
+        parameters:
+          - users
+          - items
+          - interactions
+          - schema
       dag:
         tasks:
           - name: transform-interactions
