@@ -26,9 +26,6 @@ spec:
                   value: '{{ `{{ inputs.parameters.interactions }}` }}'
                 - name: schema
                   value: '{{ `{{ inputs.parameters.schema }}` }}'
-            dependencies:
-              - transform-users
-              - transform-items
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
