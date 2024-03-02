@@ -1,0 +1,81 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: {{ .Release.Name }}
+  namespace: argo
+spec:
+  arguments: &workflow-arguments
+    parameters:
+      - name: users
+        default: ''
+      - name: items
+        default: ''
+      - name: interactions
+      - name: schema
+  entrypoint: main
+  templates:
+    - name: main
+      inputs:
+        <<: *workflow-arguments 
+      dag:
+        tasks:
+          {{- range $entity := list "users" "items" }}
+          - name: transform-{{ $entity }}
+            templateRef:
+              name: {{ $.Release.Name }}-steps
+              template: transform-step
+            arguments:
+              parameters:
+                - name: data
+                  value: '{{ printf "{{ inputs.parameters.%s }}" $entity }}'
+                - name: schema
+                  value: '{{ `{{ inputs.parameters.schema }}` }}'
+                - name: entity
+                  value: {{ $entity }}
+            when: >-
+              {{ printf "{{ inputs.parameters.%s }}" $entity }} != ''
+          {{- end }}
+          - name: transform-interactions
+            templateRef:
+              name: {{ .Release.Name }}-steps
+              template: transform-step
+            arguments:
+              parameters:
+                - name: data
+                  value: '{{ `{{ inputs.parameters.interactions }}` }}'
+                - name: schema
+                  value: '{{ `{{ inputs.parameters.schema }}` }}'
+            depends: >-
+              (transform-users.Succeeded || transform-users.Omitted || transform-users.Skipped) || 
+              (transform-items.Succeeded || transform-items.Omitted || transform-items.Skipped)
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: {{ .Release.Name }}-steps
+  namespace: argo
+spec:
+  templates:
+    - name: transform-step
+      inputs:
+        parameters:
+          - name: data
+          - name: schema
+      container:
+        image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
+        command: [ python ]
+        args:
+          - -m
+          - mar.workflow.transform
+          - --data
+          - '{{`{{ inputs.parameters.data }}`}}'
+          - --schema
+          - '{{`{{ inputs.parameters.schema }}`}}'
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: QDRANT_URL
+            value: >
+              {{ .Values.qdrant.fullnameOverride }}.{{ .Release.Namespace }}.svc.cluster.local
+          - name: QDRANT_PORT
+            value: '6333'
