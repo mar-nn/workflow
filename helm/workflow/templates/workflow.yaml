@@ -44,6 +44,9 @@ spec:
                   value: '{{ `{{ inputs.parameters.interactions }}` }}'
                 - name: schema
                   value: '{{ `{{ inputs.parameters.schema }}` }}'
+            depends: >-
+              (transform-users.Succeeded || transform-users.Omitted || transform-users.Skipped) || 
+              (transform-items.Succeeded || transform-items.Omitted || transform-items.Skipped)
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
