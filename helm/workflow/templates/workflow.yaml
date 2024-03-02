@@ -16,34 +16,19 @@ spec:
     - name: main
       dag:
         tasks:
-          {{- $entities := list "users" "items" }}
-          {{- range $entity := $entities }}
-            - name: transform-{{ $entity }}
-              templateRef:
-                name: {{ $.Release.Name }}-steps
-                template: transform-step
-              arguments:
-                parameters:
-                  - name: data
-                    value: '{{ printf "{{ inputs.parameters.%s }}" $entity }}'
-                  - name: schema
-                    value: '{{ `{{ inputs.parameters.schema }}` }}'
-                  - name: target
-                    value: {{ $entity }}
-          {{- end }}
           - name: transform-interactions
-              templateRef:
-                name: {{ $.Release.Name }}-steps
-                template: transform-step
-              arguments:
-                parameters:
-                  - name: data
-                    value: '{{ `{{ inputs.parameters.interactions }}` }}'
-                  - name: schema
-                    value: '{{ `{{ inputs.parameters.schema }}` }}'
-              dependencies:
-                - transform-users
-                - transform-items
+            templateRef:
+              name: {{ .Release.Name }}-steps
+              template: transform-step
+            arguments:
+              parameters:
+                - name: data
+                  value: '{{ `{{ inputs.parameters.interactions }}` }}'
+                - name: schema
+                  value: '{{ `{{ inputs.parameters.schema }}` }}'
+            dependencies:
+              - transform-users
+              - transform-items
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
