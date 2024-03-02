@@ -5,17 +5,19 @@ metadata:
   name: {{ .Release.Name }}
   namespace: argo
 spec:
+  arguments: &workflow-arguments
+    parameters:
+      - name: users
+        default: ''
+      - name: items
+        default: ''
+      - name: interactions
+      - name: schema
   entrypoint: main
   templates:
     - name: main
       inputs:
-        parameters:
-          - name: users
-            default: ''
-          - name: items
-            default: ''
-          - name: interactions
-          - name: schema
+        <<: *workflow-arguments 
       dag:
         tasks:
           {{- range $entity := list "users" "items" }}
