@@ -7,3 +7,6 @@ dependencies:
 - name: qdrant
   repository: https://qdrant.github.io/qdrant-helm
   version: 0.7.6
+- name: postgresql
+  version: '^8'
+  repository: '@stable'
