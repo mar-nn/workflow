@@ -5,3 +5,6 @@ workflow:
 
 qdrant:
   fullnameOverride: qdrant
+
+postgresql:
+  fullnameOverride: postgresql
