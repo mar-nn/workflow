@@ -60,6 +60,7 @@ spec:
       inputs:
         parameters:
           - name: data
+          - name: target
       container:
         image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
         command: [ python ]
@@ -70,6 +71,8 @@ spec:
           - '{{`{{ inputs.parameters.data }}`}}'
           - --schema
           - /etc/schema/schema.yaml
+          - --target
+          - '{{`{{ inputs.parameters.target }}`}}'
         imagePullPolicy: IfNotPresent
         env:
           - name: QDRANT_URL
