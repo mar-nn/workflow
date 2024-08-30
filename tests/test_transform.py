@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+import pytest
 
 from mar.nn.workflow import Transform
 
