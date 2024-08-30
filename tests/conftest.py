@@ -1,7 +1,8 @@
 import pytest
 import os
 import pandas as pd
-import yaml
+
+from mar.nn.workflow.schema import Schema
 
 
 FIXTURES_PATH = os.path.join("tests", "fixtures")
@@ -10,8 +11,7 @@ FIXTURES_PATH = os.path.join("tests", "fixtures")
 @pytest.fixture
 def schema():
     schema_path = os.path.join(FIXTURES_PATH, "schema.yaml")
-    with open(schema_path, "r") as f:
-        return yaml.safe_load(f)
+    return Schema.from_yaml(schema_path)
 
 
 @pytest.fixture
