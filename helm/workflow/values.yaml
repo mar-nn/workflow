@@ -3,5 +3,7 @@ workflow:
     repository: ghcr.io/mar-nn/workflow
     tag: latest
 
+  schema: {}
+
 qdrant:
   fullnameOverride: qdrant
