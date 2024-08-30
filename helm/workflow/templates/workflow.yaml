@@ -7,10 +7,6 @@ metadata:
 spec:
   arguments: &workflow-arguments
     parameters:
-      - name: users
-        default: ''
-      - name: items
-        default: ''
       - name: interactions
   entrypoint: main
   templates:
@@ -19,20 +15,6 @@ spec:
         <<: *workflow-arguments
       dag:
         tasks:
-          {{- range $target := list "users" "items" }}
-          - name: transform-{{ $target }}
-            templateRef:
-              name: {{ $.Release.Name }}-steps
-              template: transform-step
-            arguments:
-              parameters:
-                - name: data
-                  value: '{{ printf "{{ inputs.parameters.%s }}" $target }}'
-                - name: target
-                  value: {{ $target }}
-            when: >-
-              {{ printf "{{ inputs.parameters.%s }}" $target }} != ''
-          {{- end }}
           - name: transform-interactions
             templateRef:
               name: {{ .Release.Name }}-steps
@@ -41,9 +23,6 @@ spec:
               parameters:
                 - name: data
                   value: '{{ `{{ inputs.parameters.interactions }}` }}'
-            depends: >-
-              (transform-users.Succeeded || transform-users.Omitted || transform-users.Skipped) ||
-              (transform-items.Succeeded || transform-items.Omitted || transform-items.Skipped)
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
@@ -60,7 +39,6 @@ spec:
       inputs:
         parameters:
           - name: data
-          - name: target
       container:
         image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
         command: [ python ]
@@ -71,8 +49,6 @@ spec:
           - '{{`{{ inputs.parameters.data }}`}}'
           - --schema
           - /etc/schema/schema.yaml
-          - --target
-          - '{{`{{ inputs.parameters.target }}`}}'
         imagePullPolicy: IfNotPresent
         env:
           - name: QDRANT_URL
