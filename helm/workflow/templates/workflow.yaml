@@ -12,7 +12,6 @@ spec:
       - name: items
         default: ''
       - name: interactions
-      - name: schema
   entrypoint: main
   templates:
     - name: main
@@ -29,8 +28,6 @@ spec:
               parameters:
                 - name: data
                   value: '{{ printf "{{ inputs.parameters.%s }}" $target }}'
-                - name: schema
-                  value: '{{ `{{ inputs.parameters.schema }}` }}'
                 - name: target
                   value: {{ $target }}
             when: >-
@@ -44,8 +41,6 @@ spec:
               parameters:
                 - name: data
                   value: '{{ `{{ inputs.parameters.interactions }}` }}'
-                - name: schema
-                  value: '{{ `{{ inputs.parameters.schema }}` }}'
             depends: >-
               (transform-users.Succeeded || transform-users.Omitted || transform-users.Skipped) ||
               (transform-items.Succeeded || transform-items.Omitted || transform-items.Skipped)
@@ -61,7 +56,6 @@ spec:
       inputs:
         parameters:
           - name: data
-          - name: schema
       container:
         image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
         command: [ python ]
