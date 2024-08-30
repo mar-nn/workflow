@@ -17,24 +17,24 @@ spec:
   templates:
     - name: main
       inputs:
-        <<: *workflow-arguments 
+        <<: *workflow-arguments
       dag:
         tasks:
-          {{- range $entity := list "users" "items" }}
-          - name: transform-{{ $entity }}
+          {{- range $target := list "users" "items" }}
+          - name: transform-{{ $target }}
             templateRef:
               name: {{ $.Release.Name }}-steps
               template: transform-step
             arguments:
               parameters:
                 - name: data
-                  value: '{{ printf "{{ inputs.parameters.%s }}" $entity }}'
+                  value: '{{ printf "{{ inputs.parameters.%s }}" $target }}'
                 - name: schema
                   value: '{{ `{{ inputs.parameters.schema }}` }}'
-                - name: entity
-                  value: {{ $entity }}
+                - name: target
+                  value: {{ $target }}
             when: >-
-              {{ printf "{{ inputs.parameters.%s }}" $entity }} != ''
+              {{ printf "{{ inputs.parameters.%s }}" $target }} != ''
           {{- end }}
           - name: transform-interactions
             templateRef:
@@ -47,7 +47,7 @@ spec:
                 - name: schema
                   value: '{{ `{{ inputs.parameters.schema }}` }}'
             depends: >-
-              (transform-users.Succeeded || transform-users.Omitted || transform-users.Skipped) || 
+              (transform-users.Succeeded || transform-users.Omitted || transform-users.Skipped) ||
               (transform-items.Succeeded || transform-items.Omitted || transform-items.Skipped)
 ---
 apiVersion: argoproj.io/v1alpha1
