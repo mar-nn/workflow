@@ -2,11 +2,11 @@ datasets:
   interactions:
     userId: id
     itemId: id
-  user:
+  users:
     userId: id
     age: number
     gender: category
-  item:
+  items:
     itemId: id
     price: number
     color: category
