@@ -16,7 +16,7 @@ _ENCODER_MAPPING = {
 class Transform(ColumnTransformer):
     _feature_index: dict[str, list[int]]
 
-    def __init__(self, schema: dict[str, str]):
+    def __init__(self, schema):
         super().__init__(transformers=[], remainder="drop")
         self.schema = schema
 
