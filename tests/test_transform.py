@@ -6,15 +6,15 @@ from mar.nn.workflow import Transform
 
 @pytest.mark.parametrize("target", ["user", "item"])
 def test_fit(schema, data, target):
-    transformer = Transform(schema["transform"]["data"][target])
+    transformer = Transform(schema["datasets"][target])
     transformer.fit(data)
 
-    assert len(transformer.transformers) == len(schema["transform"]["data"][target])
+    assert len(transformer.transformers) == len(schema["datasets"][target])
 
 
 @pytest.mark.parametrize("target", ["user", "item"])
 def test_transform(schema, data, target):
-    transformer = Transform(schema["transform"]["data"][target])
+    transformer = Transform(schema["datasets"][target])
     ids, features = transformer.fit(data).transform(data)
 
     assert ids.shape == (data.shape[0], 1)
