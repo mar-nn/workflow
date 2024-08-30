@@ -1,0 +1,10 @@
+transform:
+  data:
+    user:
+      userId: id
+      age: number
+      gender: category
+    item:
+      itemId: id
+      price: number
+      color: category
