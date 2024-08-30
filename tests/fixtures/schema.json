@@ -1,0 +1,21 @@
+{
+    "datasets": {
+        "interactions": {
+            "userId": "id",
+            "itemId": "id"
+        },
+        "users": {
+            "userId": "id",
+            "age": "number",
+            "gender": "category"
+        },
+        "items": {
+            "itemId": "id",
+            "price": "number",
+            "color": "category"
+        }
+    },
+    "model": {
+        "type": "two-tower"
+    }
+}

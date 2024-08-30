@@ -1,4 +1,7 @@
 datasets:
+  interactions:
+    userId: id
+    itemId: id
   user:
     userId: id
     age: number
@@ -7,3 +10,5 @@ datasets:
     itemId: id
     price: number
     color: category
+model:
+  type: two-tower
