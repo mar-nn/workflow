@@ -7,12 +7,18 @@
                 {
                     "name": "userId",
                     "type": "id",
-                    "references": "users.userId"
+                    "references": {
+                        "dataset": "users",
+                        "field": "userId"
+                    }
                 },
                 {
                     "name": "itemId",
                     "type": "id",
-                    "references": "items.userId"
+                    "references": {
+                        "dataset": "items",
+                        "field": "itemId"
+                    }
                 }
             ]
         },

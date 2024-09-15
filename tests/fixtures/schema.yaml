@@ -4,10 +4,14 @@ datasets:
     features:
       - name: userId
         type: id
-        references: users.user_id
+        references:
+          dataset: users
+          field: userId
       - name: itemId
         type: id
-        references: items.item_id
+        references:
+          dataset: items
+          field: itemId
   - name: users
     main: false
     features:
