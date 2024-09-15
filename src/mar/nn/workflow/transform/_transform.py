@@ -44,6 +44,6 @@ class Transform(ColumnTransformer):
         schema: dict[str, str], header: np.ndarray
     ) -> dict[str, list[int]]:
         idx = {feature_type: [] for feature_type in _ENCODER_MAPPING.keys()}
-        for feature, feature_type in schema.items():
-            idx[feature_type] += np.where(header == feature)[0].tolist()
+        for feature in schema.features:
+            idx[feature.type] += np.where(header == feature.name)[0].tolist()
         return idx
