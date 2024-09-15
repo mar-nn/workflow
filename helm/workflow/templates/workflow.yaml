@@ -83,7 +83,9 @@ spec:
       outputs:
         artifacts:
           - name: transformer
-            path: /outputs/references/{{ .name }}/transform.pkl
+            path: /outputs/{{ .name }}/transformer/transform.pkl
+          - name: data
+            path: /outputs/{{ .name }}/data/transform.pq
       container:
         image: >-
           {{ $.Values.workflow.image.repository }}:{{ $.Values.workflow.image.tag }}
@@ -95,6 +97,8 @@ spec:
           - '{{ `{{ inputs.parameters.data }}` }}'
           - --schema
           - /etc/schema/schema.yaml
+          - --output
+          - /outputs/{{ .name }}
         volumeMounts:
           - name: schema-vol
             mountPath: /etc/schema
