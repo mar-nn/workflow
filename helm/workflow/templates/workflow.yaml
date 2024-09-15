@@ -21,17 +21,33 @@ spec:
           - name: transform-{{ .name }}
             templateRef:
               name: {{ $.Release.Name }}-steps
-              template: transform-step
+              template: transform-{{ .name }}-tpl
             arguments:
               parameters:
                 - name: data
                   value: '{{ `{{ inputs.parameters` }}.{{ .name }} }}'
+              {{- $hasReferences := false }}
+              {{- range .features }}
+                {{- if .references }}
+                  {{- $hasReferences = true }}
+                {{- end }}
+              {{- end }}
+              {{- if $hasReferences }}
+              artifacts:
+                {{- range .features }}
+                {{- if .references }}
+                - name: {{ .references.dataset }}
+                  from: >
+                    {{ `{{ steps.transform` }}-{{ .references.dataset }}.outputs.artifacts.transform }}
+                {{- end }}
+                {{- end }}
+              {{- end }}
           {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ .Release.Name }}-steps
+  name: {{ $.Release.Name }}-steps
   namespace: argo
 spec:
   volumes:
@@ -39,27 +55,42 @@ spec:
       configMap:
         name: schema-cm
   templates:
-    - name: transform-step
+    {{- range .Values.workflow.schema.datasets }}
+    - name: transform-{{ .name }}-tpl
       inputs:
         parameters:
           - name: data
+        {{- $hasReferences := false }}
+        {{- range .features }}
+          {{- if .references }}
+            {{- $hasReferences = true }}
+          {{- end }}
+        {{- end }}
+        {{- if $hasReferences }}
+        artifacts:
+          {{- range .features }}
+          {{- if .references }}
+          - name: {{ .references.dataset }}
+            path: /inputs/references/{{ .references.dataset }}/transform.pkl
+          {{- end }}
+          {{- end }}
+        {{- end }}
+      outputs:
+        artifacts:
+          - name: transformer
+            path: /outputs/references/{{ .name }}/transform.pkl
       container:
-        image: '{{ .Values.workflow.image.repository }}:{{ .Values.workflow.image.tag }}'
+        image: >-
+          {{ $.Values.workflow.image.repository }}:{{ $.Values.workflow.image.tag }}
         command: [ python ]
         args:
           - -m
           - mar.workflow.transform
           - --data
-          - '{{`{{ inputs.parameters.data }}`}}'
+          - '{{ `{{ inputs.parameters.data }}` }}'
           - --schema
           - /etc/schema/schema.yaml
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: QDRANT_URL
-            value: >
-              {{ .Values.qdrant.fullnameOverride }}.{{ .Release.Namespace }}.svc.cluster.local
-          - name: QDRANT_PORT
-            value: '6333'
         volumeMounts:
           - name: schema-vol
             mountPath: /etc/schema
+    {{- end }}
