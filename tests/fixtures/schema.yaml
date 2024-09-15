@@ -2,20 +2,18 @@ datasets:
   - name: interactions
     main: true
     features:
-      - name: user_id
+      - name: userId
         type: id
         foreign_key:
           references: users.user_id
-      - name: item_id
+      - name: itemId
         type: id
         foreign_key:
           references: items.item_id
-      - name: timestamp
-        type: datetime
   - name: users
     main: false
     features:
-      - name: user_id
+      - name: userId
         type: id
       - name: age
         type: number
@@ -24,11 +22,11 @@ datasets:
   - name: items
     main: false
     features:
-      - name: item_id
+      - name: itemId
         type: id
       - name: price
         type: number
-      - name: brand
+      - name: color
         type: category
 model:
   type: two-tower
