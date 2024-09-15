@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}
   namespace: argo
 spec:
-  arguments: &workflow-arguments
+  arguments:
     parameters:
       {{- range .Values.workflow.schema.datasets }}
       - name: {{ .name }}
