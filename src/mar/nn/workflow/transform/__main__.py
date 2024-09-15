@@ -5,7 +5,6 @@ import pandas as pd
 
 from mar.nn.workflow import Transform
 from mar.nn.workflow.schema import Schema
-from mar.nn.workflow.utils import filter_schema
 
 
 @click.command
@@ -17,9 +16,8 @@ from mar.nn.workflow.utils import filter_schema
 def transform(data: str, schema: str, target: str, output: str, format: str = "csv"):
     data = getattr(pd, f"read_{format}")(data)
     schema = Schema.from_yaml(schema)
-    schema = filter_schema(schema.datasets, target)
 
-    transform = Transform(schema)
+    transform = Transform(schema.filter_datasets(target))
     X = transform(data)
 
     transformer_path = os.path.join(output, "transformer", "transform.pkl")

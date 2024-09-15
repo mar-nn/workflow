@@ -4,10 +4,15 @@ import yaml
 from pydantic import BaseModel
 
 
+class _References(BaseModel):
+    dataset: str
+    field: str
+
+
 class _Feature(BaseModel):
     name: str
     type: str
-    references: str | None = None
+    references: _References | None = None
 
 
 class _Dataset(BaseModel):
@@ -34,3 +39,6 @@ class Schema(BaseModel):
     def from_json(cls, path: str):
         with open(path, "r") as f:
             return Schema(**json.load(f))
+
+    def filter_datasets(self, target: str) -> _Dataset:
+        return list(filter(lambda ds: ds.name == target, self.datasets))[0]
