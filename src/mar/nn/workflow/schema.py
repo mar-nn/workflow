@@ -4,10 +4,16 @@ import yaml
 from pydantic import BaseModel
 
 
-class _Datasets(BaseModel):
-    interactions: dict
-    users: dict = None
-    items: dict = None
+class _Feature(BaseModel):
+    name: str
+    type: str
+    references: str | None = None
+
+
+class _Dataset(BaseModel):
+    name: str
+    main: bool
+    features: list[_Feature]
 
 
 class _Model(BaseModel):
@@ -16,7 +22,7 @@ class _Model(BaseModel):
 
 
 class Schema(BaseModel):
-    datasets: _Datasets
+    datasets: list[_Dataset]
     model: _Model
 
     @classmethod

@@ -5,12 +5,19 @@ from mar.nn.workflow.schema import Schema
 
 
 def test_init():
-    schema = Schema(datasets={"interactions": {"foo": "bar"}}, model={"type": "test"})
+    datasets = [
+        {
+            "name": "interactions",
+            "main": "true",
+            "features": [{"name": "foo", "type": "id"}],
+        }
+    ]
+    model = {"type": "test"}
+    schema = Schema(datasets=datasets, model=model)
 
-    assert schema.datasets.interactions == {"foo": "bar"}
+    assert len(schema.datasets) == 1
+    assert schema.datasets[0].name == "interactions"
     assert schema.model.type == "test"
-    assert schema.datasets.users is None
-    assert schema.datasets.items is None
     assert schema.model.hyperparameters is None
 
 

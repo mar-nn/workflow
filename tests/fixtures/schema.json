@@ -1,20 +1,58 @@
 {
-    "datasets": {
-        "interactions": {
-            "userId": "id",
-            "itemId": "id"
+    "datasets": [
+        {
+            "name": "interactions",
+            "main": true,
+            "features": [
+                {
+                    "name": "userId",
+                    "type": "id",
+                    "references": "users.userId"
+                },
+                {
+                    "name": "itemId",
+                    "type": "id",
+                    "references": "items.userId"
+                }
+            ]
         },
-        "users": {
-            "userId": "id",
-            "age": "number",
-            "gender": "category"
+        {
+            "name": "users",
+            "main": false,
+            "features": [
+                {
+                    "name": "userId",
+                    "type": "id"
+                },
+                {
+                    "name": "age",
+                    "type": "number"
+                },
+                {
+                    "name": "gender",
+                    "type": "category"
+                }
+            ]
         },
-        "items": {
-            "itemId": "id",
-            "price": "number",
-            "color": "category"
+        {
+            "name": "items",
+            "main": false,
+            "features": [
+                {
+                    "name": "itemId",
+                    "type": "id"
+                },
+                {
+                    "name": "price",
+                    "type": "number"
+                },
+                {
+                    "name": "color",
+                    "type": "category"
+                }
+            ]
         }
-    },
+    ],
     "model": {
         "type": "two-tower"
     }

@@ -1,14 +1,34 @@
 datasets:
-  interactions:
-    userId: id
-    itemId: id
-  users:
-    userId: id
-    age: number
-    gender: category
-  items:
-    itemId: id
-    price: number
-    color: category
+  - name: interactions
+    main: true
+    features:
+      - name: user_id
+        type: id
+        foreign_key:
+          references: users.user_id
+      - name: item_id
+        type: id
+        foreign_key:
+          references: items.item_id
+      - name: timestamp
+        type: datetime
+  - name: users
+    main: false
+    features:
+      - name: user_id
+        type: id
+      - name: age
+        type: number
+      - name: gender
+        type: category
+  - name: items
+    main: false
+    features:
+      - name: item_id
+        type: id
+      - name: price
+        type: number
+      - name: brand
+        type: category
 model:
   type: two-tower
