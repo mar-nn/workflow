@@ -4,12 +4,10 @@ datasets:
     features:
       - name: userId
         type: id
-        foreign_key:
-          references: users.user_id
+        references: users.user_id
       - name: itemId
         type: id
-        foreign_key:
-          references: items.item_id
+        references: items.item_id
   - name: users
     main: false
     features:
