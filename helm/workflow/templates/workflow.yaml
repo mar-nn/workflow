@@ -7,7 +7,9 @@ metadata:
 spec:
   arguments: &workflow-arguments
     parameters:
-      - name: interactions
+      {{- range .Values.workflow.schema.datasets }}
+      - name: {{ .name }}
+      {{- end }}
   entrypoint: main
   templates:
     - name: main
@@ -15,14 +17,16 @@ spec:
         <<: *workflow-arguments
       dag:
         tasks:
-          - name: transform-interactions
+          {{- range .Values.workflow.schema.datasets }}
+          - name: transform-{{ .name }}
             templateRef:
-              name: {{ .Release.Name }}-steps
+              name: {{ $.Release.Name }}-steps
               template: transform-step
             arguments:
               parameters:
                 - name: data
-                  value: '{{ `{{ inputs.parameters.interactions }}` }}'
+                  value: '{{ `{{ inputs.parameters` }}.{{ .name }} }}'
+          {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
