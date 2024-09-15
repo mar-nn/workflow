@@ -9,12 +9,17 @@ spec:
     parameters:
       {{- range .Values.workflow.schema.datasets }}
       - name: {{ .name }}
+        {{- if .source }}
+        value: {{ .source }}
+        {{- end }}
       {{- end }}
   entrypoint: main
   templates:
     - name: main
       inputs:
-        <<: *workflow-arguments
+        {{- range .Values.workflow.schema.datasets }}
+        - name: {{ .name }}
+        {{- end }}
       dag:
         tasks:
           {{- range .Values.workflow.schema.datasets }}
