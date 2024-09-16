@@ -1,6 +1,5 @@
-workflow:
-  image:
-    repository: ghcr.io/mar-nn/workflow
-    tag: latest
+image:
+  repository: ghcr.io/mar-nn/workflow
+  tag: latest
 
-  schema: {}
+schema: {}

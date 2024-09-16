@@ -4,4 +4,4 @@ metadata:
   name: schema-cm
 data:
   schema.yaml: |-
-    {{- toYaml .Values.workflow.schema | nindent 4 }}
+    {{- toYaml .Values.schema | nindent 4 }}

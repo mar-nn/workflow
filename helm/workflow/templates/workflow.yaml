@@ -1,3 +1,4 @@
+{{- $schema := .Values.schema }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
@@ -7,7 +8,7 @@ metadata:
 spec:
   arguments:
     parameters:
-      {{- range .Values.workflow.schema.datasets }}
+      {{- range $schema.datasets }}
       - name: {{ .name }}
         {{- if .source }}
         value: {{ .source }}
@@ -17,12 +18,12 @@ spec:
   templates:
     - name: main
       inputs:
-        {{- range .Values.workflow.schema.datasets }}
+        {{- range $schema.datasets }}
         - name: {{ .name }}
         {{- end }}
       dag:
         tasks:
-          {{- range .Values.workflow.schema.datasets }}
+          {{- range $schema.datasets }}
           - name: transform-{{ .name }}
             templateRef:
               name: {{ $.Release.Name }}-steps
@@ -60,7 +61,7 @@ spec:
       configMap:
         name: schema-cm
   templates:
-    {{- range .Values.workflow.schema.datasets }}
+    {{- range $schema.datasets }}
     - name: transform-{{ .name }}-tpl
       inputs:
         parameters:
@@ -88,7 +89,7 @@ spec:
             path: /outputs/{{ .name }}/data/transform.pq
       container:
         image: >-
-          {{ $.Values.workflow.image.repository }}:{{ $.Values.workflow.image.tag }}
+          {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         command: [ python ]
         args:
           - -m
