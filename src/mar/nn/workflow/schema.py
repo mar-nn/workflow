@@ -1,7 +1,7 @@
 import json
 
 import yaml
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class _References(BaseModel):
@@ -21,13 +21,26 @@ class _Dataset(BaseModel):
     features: list[_Feature]
 
 
+class _DatasetList(RootModel):
+    root: list[_Dataset]
+
+    def filter(self, target):
+        return list(filter(lambda ds: ds.name == target, self.root))[0]
+
+    def __len__(self):
+        return len(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+
 class _Model(BaseModel):
     type: str
     hyperparameters: dict = None
 
 
 class Schema(BaseModel):
-    datasets: list[_Dataset]
+    datasets: _DatasetList
     model: _Model
 
     @classmethod
@@ -39,6 +52,3 @@ class Schema(BaseModel):
     def from_json(cls, path: str):
         with open(path, "r") as f:
             return Schema(**json.load(f))
-
-    def filter_datasets(self, target: str) -> _Dataset:
-        return list(filter(lambda ds: ds.name == target, self.datasets))[0]
