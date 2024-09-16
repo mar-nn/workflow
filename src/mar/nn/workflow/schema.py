@@ -24,8 +24,12 @@ class _Dataset(BaseModel):
 class _DatasetList(RootModel):
     root: list[_Dataset]
 
-    def filter(self, target):
-        return list(filter(lambda ds: ds.name == target, self.root))[0]
+    def filter(self, first: bool = True, **kwargs):
+        def filter_fn(ds):
+            return all(getattr(ds, key) == value for key, value in kwargs.items())
+
+        res = list(filter(filter_fn, self.root))
+        return res[0] if first else res
 
     def __len__(self):
         return len(self.root)
