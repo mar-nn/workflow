@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: schema-cm
+  name: schema-config
 data:
   schema.yaml: |-
     {{- toYaml .Values.schema | nindent 4 }}

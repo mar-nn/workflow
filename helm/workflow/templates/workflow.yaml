@@ -59,7 +59,7 @@ spec:
   volumes:
     - name: schema-vol
       configMap:
-        name: schema-cm
+        name: schema-config
   templates:
     {{- range $schema.datasets }}
     - name: transform-{{ .name }}-tpl
