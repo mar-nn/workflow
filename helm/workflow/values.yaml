@@ -4,6 +4,3 @@ workflow:
     tag: latest
 
   schema: {}
-
-qdrant:
-  fullnameOverride: qdrant
