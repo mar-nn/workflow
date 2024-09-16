@@ -22,4 +22,4 @@ lines_after_imports = 2
 [tool.coverage.report]
 show_missing = true
 exclude_lines = ["if __name__ == .__main__.:", "_cmd"]
-omit = ["*/__init__.py"]
+omit = ["*/__init__.py", "*/__main__.py"]
