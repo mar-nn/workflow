@@ -14,3 +14,9 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.17
+    hooks:
+      - id: terraform-fmt
+        files: \.(tf|tfvars)$
+      - id: terragrunt-hclfmt
