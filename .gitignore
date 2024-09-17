@@ -8,3 +8,5 @@ Chart.lock
 .coverage
 
 .terraform*
+
+terraform.tfstate*
