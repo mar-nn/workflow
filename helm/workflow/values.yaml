@@ -14,3 +14,6 @@ mlflow:
   tracking:
     auth:
       enabled: false
+
+  postgresql:
+    enabled: false
