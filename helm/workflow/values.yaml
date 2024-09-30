@@ -7,3 +7,6 @@ schema: {}
 mlflow:
   run:
     enabled: false
+
+  minio:
+    enabled: false
