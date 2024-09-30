@@ -4,4 +4,6 @@ image:
 
 schema: {}
 
-qdrant: {}
+qdrant:
+  persistence:
+    storageClassName: nvme-ssd
