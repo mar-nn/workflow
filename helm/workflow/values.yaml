@@ -10,3 +10,7 @@ mlflow:
 
   minio:
     enabled: false
+
+  tracking:
+    auth:
+      enabled: false
