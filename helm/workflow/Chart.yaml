@@ -7,3 +7,6 @@ dependencies:
   - name: qdrant
     repository: https://qdrant.github.io/qdrant-helm
     version: 1.11.3
+  - name: mlflow
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 1.5.7
