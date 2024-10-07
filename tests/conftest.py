@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import pytest
 
-from mar.nn.workflow.schema import Schema
+from mar.workflow.schema import Schema
 
 
 FIXTURES_PATH = os.path.join("tests", "fixtures")

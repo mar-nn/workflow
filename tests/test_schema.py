@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from mar.nn.workflow.schema import Schema
+from mar.workflow.schema import Schema
 
 
 def test_init():

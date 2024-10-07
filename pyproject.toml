@@ -12,7 +12,7 @@ dynamic = ["version", "dependencies"]
 dev = ["flake8", "black", "isort", "pytest", "pre-commit"]
 
 [tool.setuptools.dynamic]
-version = { attr = "mar.nn.workflow.__version__" }
+version = { attr = "mar.workflow.__version__" }
 dependencies = { file = ["requirements.txt"] }
 
 [tool.isort]

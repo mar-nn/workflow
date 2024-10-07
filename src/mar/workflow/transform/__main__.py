@@ -3,8 +3,8 @@ import os
 import click
 import pandas as pd
 
-from mar.nn.workflow import Transform
-from mar.nn.workflow.schema import Schema
+from mar.workflow import Transform
+from mar.workflow.schema import Schema
 
 
 @click.command

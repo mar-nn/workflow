@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from mar.nn.workflow import Transform
+from mar.workflow import Transform
 
 
 @pytest.mark.parametrize("target", ["users", "items"])
