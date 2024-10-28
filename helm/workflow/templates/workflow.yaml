@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}-workflow
   namespace: argo
 spec:
   arguments:
@@ -26,7 +26,7 @@ spec:
           {{- range $schema.datasets }}
           - name: transform-{{ .name }}
             templateRef:
-              name: {{ $.Release.Name }}-steps
+              name: {{ $.Release.Name }}-workflow-steps
               template: transform-{{ .name }}-tpl
             arguments:
               parameters:
@@ -53,7 +53,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ $.Release.Name }}-steps
+  name: {{ $.Release.Name }}-workflow-steps
   namespace: argo
 spec:
   volumes:
